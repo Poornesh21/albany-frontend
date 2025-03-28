@@ -1214,6 +1214,134 @@
             color: var(--dutch-white-light);
         }
 
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .premium-pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            background-color: var(--light-bg);
+            border-radius: var(--radius-lg);
+            padding: 0.3rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius-md);
+            color: var(--wine);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+        }
+
+        .page-link:hover {
+            background-color: var(--dutch-white-light);
+            color: var(--wine-dark);
+        }
+
+        .page-link.active {
+            background-color: var(--wine);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Fancy Pagination for Completed Services */
+        .fancy-pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .fancy-pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--white);
+            border-radius: 50px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 30px rgba(114, 47, 55, 0.15);
+            border: 1px solid rgba(114, 47, 55, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .fancy-pagination::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: var(--wine-gradient);
+            border-radius: 60px;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .fancy-page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 50%;
+            color: var(--wine);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            padding: 0 1rem;
+        }
+
+        .fancy-page-link:hover {
+            background-color: var(--dutch-white-light);
+            color: var(--wine-dark);
+        }
+
+        .fancy-page-link.active {
+            background: var(--wine-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(114, 47, 55, 0.3);
+        }
+
+        .fancy-page-link.nav-link {
+            font-size: 1rem;
+        }
+
+        .fancy-page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         /* Responsive Design */
         @media (max-width: 991.98px) {
             .sidebar {
@@ -1269,6 +1397,20 @@
             .stats-row {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .fancy-pagination-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .fancy-pagination-info {
+                margin-left: 0;
+            }
+
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 767.98px) {
@@ -1315,6 +1457,19 @@
             
             .service-cards-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .fancy-page-link {
+                min-width: 2.5rem;
+                height: 2.5rem;
+                padding: 0 0.75rem;
+            }
+
+            .premium-pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.5rem;
             }
         }
 
@@ -1414,6 +1569,30 @@
                 align-items: flex-start;
                 gap: 0.5rem;
             }
+
+            .fancy-pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Hide all table rows except the first 5 by default */
+        .premium-table tbody tr {
+            display: none;
+        }
+
+        .premium-table tbody tr.active-page {
+            display: table-row;
+        }
+
+        /* Hide all service cards except the first 3 by default */
+        .service-card {
+            display: none;
+        }
+
+        .service-card.active-page {
+            display: block;
         }
     </style>
 </head>
@@ -1641,7 +1820,7 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="premium-table">
+                    <table class="premium-table" id="dueTable">
                         <thead>
                             <tr>
                                 <th>Vehicle</th>
@@ -1652,7 +1831,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="active-page" data-page="1">
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -1691,7 +1870,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="active-page" data-page="1">
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -1730,7 +1909,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="active-page" data-page="1">
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -1769,8 +1948,228 @@
                                     </button>
                                 </td>
                             </tr>
+                            <tr class="active-page" data-page="1">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Honda City</h5>
+                                            <p>Reg: DL05GH7890</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Neha Verma</h5>
+                                            <p>neha@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td>Mar 30, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-assign" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#singleAssignModal"
+                                            data-vehicle-name="Honda City"
+                                            data-vehicle-reg="DL05GH7890"
+                                            data-customer-name="Neha Verma">
+                                        <i class="fas fa-user-plus"></i>
+                                        Assign
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="active-page" data-page="1">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Bajaj Pulsar</h5>
+                                            <p>Reg: KA09JK2345</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Vikram Reddy</h5>
+                                            <p>vikram@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td>Mar 28, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-assign" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#singleAssignModal"
+                                            data-vehicle-name="Bajaj Pulsar"
+                                            data-vehicle-reg="KA09JK2345"
+                                            data-customer-name="Vikram Reddy">
+                                        <i class="fas fa-user-plus"></i>
+                                        Assign
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Toyota Fortuner</h5>
+                                            <p>Reg: MH07LM5678</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Rohan Mehta</h5>
+                                            <p>rohan@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td>Mar 29, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-assign" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#singleAssignModal"
+                                            data-vehicle-name="Toyota Fortuner"
+                                            data-vehicle-reg="MH07LM5678"
+                                            data-customer-name="Rohan Mehta">
+                                        <i class="fas fa-user-plus"></i>
+                                        Assign
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Maruti Swift</h5>
+                                            <p>Reg: TN10NP9012</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Kiran Kumar</h5>
+                                            <p>kiran@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td>Mar 30, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-assign" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#singleAssignModal"
+                                            data-vehicle-name="Maruti Swift"
+                                            data-vehicle-reg="TN10NP9012"
+                                            data-customer-name="Kiran Kumar">
+                                        <i class="fas fa-user-plus"></i>
+                                        Assign
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>TVS Apache</h5>
+                                            <p>Reg: KA08QR3456</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Sanjay Gupta</h5>
+                                            <p>sanjay@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td>Mar 31, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-assign" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#singleAssignModal"
+                                            data-vehicle-name="TVS Apache"
+                                            data-vehicle-reg="KA08QR3456"
+                                            data-customer-name="Sanjay Gupta">
+                                        <i class="fas fa-user-plus"></i>
+                                        Assign
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Pagination for Due Table -->
+                <div class="pagination-container">
+                    <ul class="premium-pagination" id="dueTablePagination">
+                        <li class="page-item">
+                            <button class="page-link disabled" id="duePrevBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link active" data-page="1">1</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" data-page="2">2</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" data-page="3">3</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" id="dueNextBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
@@ -1790,7 +2189,7 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="premium-table">
+                    <table class="premium-table" id="serviceTable">
                         <thead>
                             <tr>
                                 <th>Vehicle</th>
@@ -1802,7 +2201,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="active-page" data-page="1">
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -1839,7 +2238,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="active-page" data-page="1">
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -1876,8 +2275,252 @@
                                     </button>
                                 </td>
                             </tr>
+                            <tr class="active-page" data-page="1">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Maruti Baleno</h5>
+                                            <p>Reg: DL06KL9012</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Sunita Kumar</h5>
+                                            <p>ID: SA-1087</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 25, 2025</td>
+                                <td>Mar 28, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="active-page" data-page="1">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Toyota Innova</h5>
+                                            <p>Reg: KA10MN4567</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Vikram Mehta</h5>
+                                            <p>ID: SA-1023</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 22, 2025</td>
+                                <td>Mar 27, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="active-page" data-page="1">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Hero Splendor</h5>
+                                            <p>Reg: UP12PQ7890</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Deepak Sharma</h5>
+                                            <p>ID: SA-1045</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 24, 2025</td>
+                                <td>Mar 25, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Tata Safari</h5>
+                                            <p>Reg: MH11RS3456</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Sunita Kumar</h5>
+                                            <p>ID: SA-1087</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 25, 2025</td>
+                                <td>Mar 29, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Hyundai Creta</h5>
+                                            <p>Reg: DL13TU9012</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Vikram Mehta</h5>
+                                            <p>ID: SA-1023</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 23, 2025</td>
+                                <td>Mar 27, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-page="2">
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h5>Bajaj Avenger</h5>
+                                            <p>Reg: KA14VW5678</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="person-info">
+                                        <div class="person-details">
+                                            <h5>Deepak Sharma</h5>
+                                            <p>ID: SA-1045</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-progress">
+                                        <i class="fas fa-spinner"></i>
+                                        In Progress
+                                    </span>
+                                </td>
+                                <td>Mar 24, 2025</td>
+                                <td>Mar 26, 2025</td>
+                                <td class="table-actions-cell">
+                                    <button class="btn-premium sm primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#vehicleServiceDetailsModal">
+                                        <i class="fas fa-eye"></i>
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Pagination for Service Table -->
+                <div class="pagination-container">
+                    <ul class="premium-pagination" id="serviceTablePagination">
+                        <li class="page-item">
+                            <button class="page-link disabled" id="servicePrevBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link active" data-page="1">1</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" data-page="2">2</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" id="serviceNextBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
@@ -1894,8 +2537,8 @@
                     </div>
                 </div>
                 
-                <div class="service-cards-grid">
-                    <div class="service-card">
+                <div class="service-cards-grid" id="completedServicesGrid">
+                    <div class="service-card active-page" data-page="1">
                         <div class="service-card-header">
                             <h4 class="service-card-title">
                                 <i class="fas fa-car-side"></i>
@@ -1946,7 +2589,58 @@
                         </div>
                     </div>
                     
-                    <div class="service-card">
+                    <div class="service-card active-page" data-page="1">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-car-side"></i>
+                                Honda City
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">MH08QR5678</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 25, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Suresh Rao</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Vikram Mehta</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹38,200</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="2" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="service-card active-page" data-page="1">
                         <div class="service-card-header">
                             <h4 class="service-card-title">
                                 <i class="fas fa-car-side"></i>
@@ -1957,6 +2651,7 @@
                                 <div class="status-text completed">Completed</div>
                             </div>
                         </div>
+                        
                         <div class="service-card-body">
                             <div class="service-meta">
                                 <div class="service-meta-item">
@@ -1996,6 +2691,277 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <div class="service-card" data-page="2">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-motorcycle"></i>
+                                Royal Enfield Classic
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">KA09TU7890</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 22, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Ravi Khanna</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Deepak Sharma</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹22,300</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="5" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="5" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card" data-page="2">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-car-side"></i>
+                                Hyundai i20
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">DL04VW1234</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 21, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Meena Iyer</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Sunita Kumar</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹28,750</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="6" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="6" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card" data-page="2">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-motorcycle"></i>
+                                Bajaj Pulsar
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">KA12XY5678</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 20, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Vijay Reddy</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Deepak Sharma</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹18,900</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="7" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="7" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card" data-page="3">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-car-side"></i>
+                                Maruti Swift
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">MH02ZA9012</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 19, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Ankit Patel</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Vikram Mehta</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹25,450</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="8" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="8" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card" data-page="3">
+                        <div class="service-card-header">
+                            <h4 class="service-card-title">
+                                <i class="fas fa-car-side"></i>
+                                Tata Nexon
+                            </h4>
+                            <div class="service-status">
+                                <div class="status-indicator completed"></div>
+                                <div class="status-text completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="service-card-body">
+                            <div class="service-meta">
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Registration</div>
+                                    <div class="service-meta-value">KA15BC3456</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Completed Date</div>
+                                    <div class="service-meta-value">Mar 18, 2025</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Customer</div>
+                                    <div class="service-meta-value">Rohit Sharma</div>
+                                </div>
+                                <div class="service-meta-item">
+                                    <div class="service-meta-label">Service Advisor</div>
+                                    <div class="service-meta-value">Sunita Kumar</div>
+                                </div>
+                            </div>
+                            <div class="price">Total Cost: ₹33,200</div>
+                        </div>
+                        <div class="service-card-footer">
+                            <button class="btn-premium sm secondary view-service-details-btn" 
+                                    data-service-id="9" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#completedServiceDetailsModal">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn-premium sm primary generate-invoice-btn" 
+                                    data-service-id="9" 
+                                    data-has-invoice="false" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#generateInvoiceModal">
+                                <i class="fas fa-file-invoice"></i>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fancy Pagination for Completed Service Cards -->
+                <div class="fancy-pagination-container">
+                    <div class="fancy-pagination" id="completedServicesPagination">
+                        <button class="fancy-page-link nav-link disabled" id="completedPrevBtn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="fancy-page-link active" data-page="1">1</button>
+                        <button class="fancy-page-link" data-page="2">2</button>
+                        <button class="fancy-page-link" data-page="3">3</button>
+                        <button class="fancy-page-link nav-link" id="completedNextBtn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
                 </div>
             </section>
 
@@ -2136,9 +3102,7 @@
         </div>
     </div>
     
-    <!-- Removed Bulk Assign Advisor Modal -->
-
-    <!-- Service Details Modal (For vehicles under service) - Removed notes tab -->
+    <!-- Service Details Modal (For vehicles under service) -->
     <div class="modal fade premium-modal" id="vehicleServiceDetailsModal" tabindex="-1" aria-labelledby="vehicleServiceDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -2510,8 +3474,6 @@
         </div>
     </div>
 
-    <!-- Removed Update Status Modal -->
-
     <!-- jQuery and Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
@@ -2766,55 +3728,6 @@
                 }
             }
             
-            // Handle confirm assignment button for bulk assign
-            document.getElementById('confirmAssignBtn').addEventListener('click', function() {
-                // Get selected advisor
-                const selectedAdvisor = document.querySelector('#assignAdvisorModal .advisor-card.selected');
-                
-                // Get selected vehicles
-                const selectedVehicles = document.querySelectorAll('#assignAdvisorModal .vehicle-card.selected');
-                
-                if (selectedAdvisor && selectedVehicles.length > 0) {
-                    const advisorName = selectedAdvisor.querySelector('.advisor-name').textContent;
-                    const vehicleCount = selectedVehicles.length;
-                    
-                    // Close the modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('assignAdvisorModal'));
-                    modal.hide();
-                    
-                    // Show success message
-                    showToast(`${vehicleCount} vehicles have been successfully assigned to ${advisorName}`);
-                } else {
-                    // Show validation message
-                    if (!selectedAdvisor) {
-                        alert('Please select a service advisor');
-                    } else if (selectedVehicles.length === 0) {
-                        alert('Please select at least one vehicle');
-                    }
-                }
-            });
-            
-            // Handle confirm assignment button for single assign
-            document.getElementById('confirmSingleAssignBtn').addEventListener('click', function() {
-                // Get selected advisor
-                const selectedAdvisor = document.querySelector('#singleAssignModal .advisor-card.selected');
-                
-                if (selectedAdvisor) {
-                    const advisorName = selectedAdvisor.querySelector('.advisor-name').textContent;
-                    const vehicleName = document.querySelector('#singleAssignModal .vehicle-name').textContent;
-                    
-                    // Close the modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('singleAssignModal'));
-                    modal.hide();
-                    
-                    // Show success message
-                    showToast(`${vehicleName} has been successfully assigned to ${advisorName}`);
-                } else {
-                    // Show validation message
-                    alert('Please select a service advisor');
-                }
-            });
-            
             // Set vehicle details in single assign modal
             document.querySelectorAll('[data-bs-target="#singleAssignModal"]').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -2845,6 +3758,218 @@
                     }
                 });
             });
+            
+            // Due Table Pagination
+            const dueRowsPerPage = 5;
+            const dueTotalItems = document.querySelectorAll('#dueTable tbody tr').length;
+            const dueTotalPages = Math.ceil(dueTotalItems / dueRowsPerPage);
+            
+            function setDuePage(pageNum) {
+                const prevBtn = document.getElementById('duePrevBtn');
+                const nextBtn = document.getElementById('dueNextBtn');
+                const tableRows = document.querySelectorAll('#dueTable tbody tr');
+                
+                // Hide all rows
+                tableRows.forEach(row => {
+                    row.classList.remove('active-page');
+                });
+                
+                // Show rows for current page
+                const startIndex = (pageNum - 1) * dueRowsPerPage;
+                const endIndex = Math.min(startIndex + dueRowsPerPage, dueTotalItems);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    tableRows[i].classList.add('active-page');
+                }
+                
+                // Update pagination buttons states
+                document.querySelectorAll('#dueTablePagination [data-page]').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.getAttribute('data-page')) === pageNum) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Enable/disable prev/next buttons
+                if (pageNum === 1) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (pageNum === dueTotalPages) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+            
+            // Service Table Pagination
+            const serviceRowsPerPage = 5;
+            const serviceTotalItems = document.querySelectorAll('#serviceTable tbody tr').length;
+            const serviceTotalPages = Math.ceil(serviceTotalItems / serviceRowsPerPage);
+            
+            function setServicePage(pageNum) {
+                const prevBtn = document.getElementById('servicePrevBtn');
+                const nextBtn = document.getElementById('serviceNextBtn');
+                const tableRows = document.querySelectorAll('#serviceTable tbody tr');
+                
+                // Hide all rows
+                tableRows.forEach(row => {
+                    row.classList.remove('active-page');
+                });
+                
+                // Show rows for current page
+                const startIndex = (pageNum - 1) * serviceRowsPerPage;
+                const endIndex = Math.min(startIndex + serviceRowsPerPage, serviceTotalItems);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    tableRows[i].classList.add('active-page');
+                }
+                
+                // Update pagination buttons states
+                document.querySelectorAll('#serviceTablePagination [data-page]').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.getAttribute('data-page')) === pageNum) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Enable/disable prev/next buttons
+                if (pageNum === 1) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (pageNum === serviceTotalPages) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+            
+            // Completed Services Pagination
+            const completedCardsPerPage = 3;
+            const completedTotalItems = document.querySelectorAll('#completedServicesGrid .service-card').length;
+            const completedTotalPages = Math.ceil(completedTotalItems / completedCardsPerPage);
+            
+            function setCompletedPage(pageNum) {
+                const prevBtn = document.getElementById('completedPrevBtn');
+                const nextBtn = document.getElementById('completedNextBtn');
+                const serviceCards = document.querySelectorAll('#completedServicesGrid .service-card');
+                
+                // Hide all cards
+                serviceCards.forEach(card => {
+                    card.classList.remove('active-page');
+                });
+                
+                // Show cards for current page
+                const startIndex = (pageNum - 1) * completedCardsPerPage;
+                const endIndex = Math.min(startIndex + completedCardsPerPage, completedTotalItems);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    serviceCards[i].classList.add('active-page');
+                }
+                
+                // Update pagination buttons states
+                document.querySelectorAll('#completedServicesPagination [data-page]').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.getAttribute('data-page')) === pageNum) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Update pagination info
+                document.querySelector('.fancy-pagination-info .pagination-count').textContent = pageNum;
+                
+                // Enable/disable prev/next buttons
+                if (pageNum === 1) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (pageNum === completedTotalPages) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+            
+            // Set up pagination click events for Due Table
+            document.querySelectorAll('#dueTablePagination [data-page]').forEach(button => {
+                button.addEventListener('click', function() {
+                    setDuePage(parseInt(this.getAttribute('data-page')));
+                });
+            });
+            
+            document.getElementById('duePrevBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#dueTablePagination .page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage > 1) {
+                    setDuePage(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('dueNextBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#dueTablePagination .page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage < dueTotalPages) {
+                    setDuePage(currentPage + 1);
+                }
+            });
+            
+            // Set up pagination click events for Service Table
+            document.querySelectorAll('#serviceTablePagination [data-page]').forEach(button => {
+                button.addEventListener('click', function() {
+                    setServicePage(parseInt(this.getAttribute('data-page')));
+                });
+            });
+            
+            document.getElementById('servicePrevBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#serviceTablePagination .page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage > 1) {
+                    setServicePage(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('serviceNextBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#serviceTablePagination .page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage < serviceTotalPages) {
+                    setServicePage(currentPage + 1);
+                }
+            });
+            
+            // Set up pagination click events for Completed Services
+            document.querySelectorAll('#completedServicesPagination [data-page]').forEach(button => {
+                button.addEventListener('click', function() {
+                    setCompletedPage(parseInt(this.getAttribute('data-page')));
+                });
+            });
+            
+            document.getElementById('completedPrevBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#completedServicesPagination .fancy-page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage > 1) {
+                    setCompletedPage(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('completedNextBtn').addEventListener('click', function() {
+                const activePage = document.querySelector('#completedServicesPagination .fancy-page-link.active');
+                const currentPage = parseInt(activePage.getAttribute('data-page'));
+                if (currentPage < completedTotalPages) {
+                    setCompletedPage(currentPage + 1);
+                }
+            });
+            
+            // Initialize all paginations
+            setDuePage(1);
+            setServicePage(1);
+            setCompletedPage(1);
             
             // Toast notification function
             function showToast(message) {
@@ -2885,6 +4010,27 @@
                     toastElement.remove();
                 });
             }
+            
+            // Handle confirm assignment button for single assign
+            document.getElementById('confirmSingleAssignBtn').addEventListener('click', function() {
+                // Get selected advisor
+                const selectedAdvisor = document.querySelector('#singleAssignModal .advisor-card.selected');
+                
+                if (selectedAdvisor) {
+                    const advisorName = selectedAdvisor.querySelector('.advisor-name').textContent;
+                    const vehicleName = document.querySelector('#singleAssignModal .vehicle-name').textContent;
+                    
+                    // Close the modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('singleAssignModal'));
+                    modal.hide();
+                    
+                    // Show success message
+                    showToast(`${vehicleName} has been successfully assigned to ${advisorName}`);
+                } else {
+                    // Show validation message
+                    alert('Please select a service advisor');
+                }
+            });
             
             // Handle logout button
             document.querySelector('.logout-btn').addEventListener('click', function() {
